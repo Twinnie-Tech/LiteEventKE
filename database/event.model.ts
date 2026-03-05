@@ -1,8 +1,7 @@
-import { Schema, model, models , HydratedDocument } from 'mongoose';
+import { Schema, model, models, Document } from 'mongoose';
 
 // TypeScript interface for Event document
-export interface IEvent {
-  _id:string;
+export interface IEvent extends Document {
   title: string;
   slug: string;
   description: string;
@@ -17,11 +16,9 @@ export interface IEvent {
   agenda: string[];
   organizer: string;
   tags: string[];
-  createdAt: string;
-  updatedAt: string;
+  createdAt: Date;
+  updatedAt: Date;
 }
-
-export type EventDocument = HydratedDocument<IEvent>;
 
 const EventSchema = new Schema<IEvent>(
   {
@@ -113,25 +110,26 @@ const EventSchema = new Schema<IEvent>(
 );
 
 // Pre-save hook for slug generation and data normalization
-EventSchema.pre("save", function (this: EventDocument, next) {
+EventSchema.pre('save', function (next) {
+  const event = this as IEvent;
+
   // Generate slug only if title changed or document is new
-  if (this.isModified("title") || this.isNew) {
-    this.slug = generateSlug(this.title);
+  if (event.isModified('title') || event.isNew) {
+    event.slug = generateSlug(event.title);
   }
 
   // Normalize date to ISO format if it's not already
-  if (this.isModified("date")) {
-    this.date = normalizeDate(this.date);
+  if (event.isModified('date')) {
+    event.date = normalizeDate(event.date);
   }
 
   // Normalize time format (HH:MM)
-  if (this.isModified("time")) {
-    this.time = normalizeTime(this.time);
+  if (event.isModified('time')) {
+    event.time = normalizeTime(event.time);
   }
 
   next();
 });
-
 
 // Helper function to generate URL-friendly slug
 function generateSlug(title: string): string {
@@ -180,11 +178,11 @@ function normalizeTime(timeString: string): string {
   return `${hours.toString().padStart(2, '0')}:${minutes}`;
 }
 
-// Create unique index on slug for better performance
-EventSchema.index({ slug: 1 }, { unique: true });
+// // Create unique index on slug for better performance
+// EventSchema.index({ slug: 1 }, { unique: true });
 
 // Create compound index for common queries
-EventSchema.index({ date: 1, mode: 1 });
+// EventSchema.index({ date: 1, mode: 1 });
 
 const Event = models.Event || model<IEvent>('Event', EventSchema);
 

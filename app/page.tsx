@@ -1,18 +1,18 @@
-import {cacheLife} from "next/cache";
 import EventsSection from "@/components/EventsSection";
 import { getEvents } from "@/lib/actions/event.actions";
+import { Suspense } from "react";
 
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
+async function  Events() {
+    const  events  =  await getEvents();
+    return <EventsSection events={events} />
+}
 
 const Page = async () => {
-    'use cache'
-    cacheLife('hours')
-    const response = await fetch(`${BASE_URL}/api/events`);
-     const  {events}  = await response.json();
-
     return (
         <main className="wrapper my-10">
-           <EventsSection  events={events}/>
+           <Suspense fallback={<p>Loading events...</p>}>
+                <Events />
+           </Suspense>
         </main>
     )
 }

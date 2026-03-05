@@ -2,6 +2,7 @@
 
 import Event, { IEvent } from '@/database/event.model';
 import connectDB from "@/lib/mongodb";
+import { json } from 'stream/consumers';
 
 export const getSimilarEventsBySlug = async (slug: string): Promise<IEvent[]> => {
     try {
@@ -17,19 +18,19 @@ export const getSimilarEventsBySlug = async (slug: string): Promise<IEvent[]> =>
 }
 
 export const getEvents = async (): Promise<IEvent[]> => {
-    try {
-        await connectDB();
+  try {
+    await connectDB();
 
-        const events = await Event
-            .find({})
-            .sort({ createdAt: -1 })
-            .lean<IEvent[]>();
+    const events = await Event
+      .find({})
+      .sort({ createdAt: -1 })
+      .lean();
 
-        return events;
-    } catch (error) {
-        console.error("Error fetching events:", error);
-        return [];
-    }
+    return JSON.parse(JSON.stringify(events));
+  } catch (error) {
+    console.error("Error fetching events:", error);
+    return [];
+  }
 };
 
 export const createEvent = async () => {
