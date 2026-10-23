@@ -3,6 +3,7 @@ import { Schibsted_Grotesk, Martian_Mono } from "next/font/google";
 import "./globals.css";
 import LightRays from "@/components/LightRays";
 import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 
 const schibstedGrotesk = Schibsted_Grotesk({
   variable: "--font-schibsted-grotesk",
@@ -15,8 +16,8 @@ const martianMono = Martian_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "LiteEventKE",
-  description: "The Hub for Lite Events You Mustn't Miss",
+  title: "MlimaEvents",
+  description: "Find concerts, weddings, church gatherings, meetups and conferences happening around Mt Kenya.",
 };
 
 export default function RootLayout({
@@ -29,12 +30,18 @@ export default function RootLayout({
       <body
         className={`${schibstedGrotesk.variable} ${martianMono.variable} min-h-screen antialiased`}
       >
+      <script
+        suppressHydrationWarning
+        dangerouslySetInnerHTML={{
+          __html: `(function(){function clean(){document.querySelectorAll("[data-cursor-ref]").forEach(function(el){el.removeAttribute("data-cursor-ref")})}clean();new MutationObserver(clean).observe(document.documentElement,{subtree:true,attributes:true,attributeFilter:["data-cursor-ref"]})})();`,
+        }}
+      />
       <Navbar />
 
-          <div className="absolute inset-0 top-0 z-[-1] min-h-screen">
+          <div className="pointer-events-none fixed inset-0 z-[-1]">
               <LightRays
                   raysOrigin="top-center-offset"
-                  raysColor="#5dfeca"
+                  raysColor="#f5a524"
                   raysSpeed={0.5}
                   lightSpread={0.9}
                   rayLength={1.4}
@@ -48,6 +55,7 @@ export default function RootLayout({
           <main>
             {children}
           </main>
+          <Footer />
       </body>
     </html>
   );

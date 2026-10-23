@@ -3,17 +3,15 @@ import { getEvents } from "@/lib/actions/event.actions";
 import { Suspense } from "react";
 
 async function  Events() {
-    const  events  =  await getEvents();
-    return <EventsSection events={events} />
+    const { events, unavailable } = await getEvents();
+    return <EventsSection events={events} unavailable={unavailable} />
 }
 
 const Page = async () => {
     return (
-        <main className="wrapper my-10">
-           <Suspense fallback={<p>Loading events...</p>}>
-                <Events />
-           </Suspense>
-        </main>
+        <Suspense fallback={<p className="loading-events">Gathering what&apos;s on around the mountain…</p>}>
+            <Events />
+        </Suspense>
     )
 }
 

@@ -16,6 +16,8 @@ export interface IEvent extends Document {
   agenda: string[];
   organizer: string;
   tags: string[];
+  hostId?: string;
+  hostEmail?: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -102,6 +104,15 @@ const EventSchema = new Schema<IEvent>(
         validator: (v: string[]) => v.length > 0,
         message: 'At least one tag is required',
       },
+    },
+    hostId: {
+      type: String,
+      trim: true,
+    },
+    hostEmail: {
+      type: String,
+      trim: true,
+      lowercase: true,
     },
   },
   {

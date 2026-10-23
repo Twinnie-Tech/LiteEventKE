@@ -1,5 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
+import { Calendar, Clock, MapPin } from "lucide-react";
+import { formatEventDate, formatEventTime } from "@/lib/format";
 
 interface Props {
     title: string;
@@ -12,28 +14,39 @@ interface Props {
 
 const EventCard = ({ title, image, slug, location, date, time }: Props) => {
     return (
-        <Link href={`/events/${slug}`} id="event-card">
-            <Image src={image} alt={title} width={410} height={300} className="poster" />
-
-            <div className="flex flex-row gap-2">
-                <Image src="/icons/pin.svg" alt="location" width={14} height={14} />
-                <p>{location}</p>
+        <Link href={`/events/${slug}`} className="event-card">
+            <div className="poster-wrap">
+                {image ? (
+                    <Image
+                        src={image}
+                        alt={title}
+                        fill
+                        sizes="(max-width: 768px) 100vw, 360px"
+                        className="poster"
+                    />
+                ) : null}
             </div>
 
-            <p className="title">{title}</p>
+            <div className="card-body">
+                <p className="title">{title}</p>
 
-            <div className="datetime">
-                <div>
-                    <Image src="/icons/calendar.svg" alt="date" width={14} height={14} />
-                    <p>{date}</p>
-                </div>
-                <div>
-                    <Image src="/icons/clock.svg" alt="time" width={14} height={14} />
-                    <p>{time}</p>
+                <div className="datetime">
+                    <div>
+                        <MapPin size={14} />
+                        <p>{location}</p>
+                    </div>
+                    <div>
+                        <Calendar size={14} />
+                        <p>{formatEventDate(date)}</p>
+                    </div>
+                    <div>
+                        <Clock size={14} />
+                        <p>{formatEventTime(time)}</p>
+                    </div>
                 </div>
             </div>
         </Link>
-    )
-}
+    );
+};
 
-export default EventCard
+export default EventCard;

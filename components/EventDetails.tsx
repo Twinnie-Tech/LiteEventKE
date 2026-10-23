@@ -5,12 +5,14 @@ import {getSimilarEventsBySlug} from "@/lib/actions/event.actions";
 import Image from "next/image";
 import BookEvent from "@/components/BookEvent";
 import EventCard from "@/components/EventCard";
+import { formatEventDate, formatEventTime } from "@/lib/format";
+import { Calendar, Clock, MapPin, MonitorSmartphone, Users, type LucideIcon } from "lucide-react";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
-const EventDetailItem = ({ icon, alt, label }: { icon: string; alt: string; label: string; }) => (
+const EventDetailItem = ({ icon: Icon, label }: { icon: LucideIcon; label: string; }) => (
     <div className="flex-row-gap-2 items-center">
-        <Image src={icon} alt={alt} width={17} height={17} />
+        <Icon size={17} />
         <p>{label}</p>
     </div>
 )
@@ -58,7 +60,7 @@ const EventDetails = async ({ params }: { params: Promise<string> }) => {
         return notFound();
     }
 
-    const { description, image, overview, date, time, location, mode, agenda, audience, tags, organizer } = event;
+    const { title, description, image, overview, date, time, location, mode, agenda, audience, tags, organizer } = event;
 
     if(!description) return notFound();
     
@@ -70,7 +72,11 @@ const EventDetails = async ({ params }: { params: Promise<string> }) => {
     return (
         <section id="event">
             <div className="header">
-                <h1>Event Description</h1>
+                <p className="eyebrow">
+                    <span className="dot" />
+                    {location}
+                </p>
+                <h1>{title}</h1>
                 <p>{description}</p>
             </div>
 
@@ -87,11 +93,11 @@ const EventDetails = async ({ params }: { params: Promise<string> }) => {
                     <section className="flex-col-gap-2">
                         <h2>Event Details</h2>
 
-                        <EventDetailItem icon="/icons/calendar.svg" alt="calendar" label={date} />
-                        <EventDetailItem icon="/icons/clock.svg" alt="clock" label={time} />
-                        <EventDetailItem icon="/icons/pin.svg" alt="pin" label={location} />
-                        <EventDetailItem icon="/icons/mode.svg" alt="mode" label={mode} />
-                        <EventDetailItem icon="/icons/audience.svg" alt="audience" label={audience} />
+                        <EventDetailItem icon={Calendar} label={formatEventDate(date)} />
+                        <EventDetailItem icon={Clock} label={formatEventTime(time)} />
+                        <EventDetailItem icon={MapPin} label={location} />
+                        <EventDetailItem icon={MonitorSmartphone} label={mode} />
+                        <EventDetailItem icon={Users} label={audience} />
                     </section>
 
                     <EventAgenda agendaItems={agenda} />

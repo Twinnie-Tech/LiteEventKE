@@ -17,7 +17,7 @@ export const getSimilarEventsBySlug = async (slug: string): Promise<IEvent[]> =>
     }
 }
 
-export const getEvents = async (): Promise<IEvent[]> => {
+export const getEvents = async (): Promise<{ events: IEvent[]; unavailable: boolean }> => {
   try {
     await connectDB();
 
@@ -26,10 +26,9 @@ export const getEvents = async (): Promise<IEvent[]> => {
       .sort({ createdAt: -1 })
       .lean();
 
-    return JSON.parse(JSON.stringify(events));
-  } catch (error) {
-    console.error("Error fetching events:", error);
-    return [];
+    return { events: JSON.parse(JSON.stringify(events)), unavailable: false };
+  } catch {
+    return { events: [], unavailable: true };
   }
 };
 
